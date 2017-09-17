@@ -30,9 +30,15 @@ var getAttendanceInfo = function (req, res) {
     form: formDetails,
     headers: headers
   };
+  let startTime = Date.now();
   request(options, (err, httpResponse, body) => {
-    parserLogic.parseAttendance(body, function(result) {
-      res.json(result)
+    parserLogic.parseAttendance(body, function(err, result) {
+      if(err) {
+        res.json({ success : false, message : err.message })
+        return
+      } else {
+        res.json(result);
+      }
     })
   })
 }

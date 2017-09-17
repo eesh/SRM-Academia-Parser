@@ -1,0 +1,20 @@
+# Node server that parsers SRM Academia webpage
+
+## Usage
+
+```HTTP
+GET /attendanceInfo?clientAuthToken=<academia-token>
+```
+
+## Dependencies
+
+- [express](https://www.npmjs.com/package/express)
+- [request](https://www.npmjs.com/package/request)
+- [soupselect](https://www.npmjs.com/package/soupselect)
+- [htmlparser](https://www.npmjs.com/package/htmlparser)
+
+## Start server
+
+```bash
+node index.js
+```

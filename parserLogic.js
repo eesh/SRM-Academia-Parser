@@ -3,22 +3,34 @@ const select = require('soupselect').select
 
 
 function parseAttendance (htmlBody, callback) {
-  var handler = new htmlparser.DefaultHandler(function(err, dom) {
-      if (err) {
-          console.log("Error: " + err);
-          callback({error:err})
-      } else {
+    var handler = new htmlparser.DefaultHandler(function(err, dom) {
+        if (err) {
+            console.log("Error: " + err.message);
+            callback(err, null)
+            return
+        } else {
+            var tables, studentDetails, attendanceDetails, marks;
+            try{
+                tables = select(dom, 'table');
+                studentDetails = parseStudentTable(tables[2]);
+                attendanceDetails = parseAttendaceDetails(tables[3]);
+                marks = parseMarks(tables[4]);
+            } catch (err) {
+                callback(err, null);
+                return
+            }
+            callback(null, { 'studentDetails' : studentDetails, 'attendanceDetails' : attendanceDetails, 'marks': marks });
+            return
+        }
+    });
 
-          var tables = select(dom, 'table');
-          var studentDetails = parseStudentTable(tables[2]);
-          var attendanceDetails = parseAttendaceDetails(tables[3]);
-          var marks = parseMarks(tables[4]);
-
-          callback({ 'studentDetails' : studentDetails, 'attendanceDetails' : attendanceDetails, 'marks': marks });
-      }
-  });
-  var parser = new htmlparser.Parser(handler);
-  parser.parseComplete(htmlBody);
+    try {
+      var parser = new htmlparser.Parser(handler);
+      parser.parseComplete(htmlBody);
+    } catch (err) {
+      callback(err, null);
+      return
+    }
 }
 
 
